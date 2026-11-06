@@ -1,0 +1,5 @@
+{
+  "libsigrok": "homebrew/core",
+  "libsigrokdecode": "homebrew/core",
+  "sigrok-cli": "homebrew/core"
+}

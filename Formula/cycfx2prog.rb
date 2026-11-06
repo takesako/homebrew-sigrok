@@ -2,22 +2,28 @@ class Cycfx2prog < Formula
   desc "Cypress FX2 programmer: download 8051 program into the FX2(LP) board"
   homepage "https://www.triplespark.net/elec/periph/USB-FX2/software/"
   url "https://www.triplespark.net/elec/periph/USB-FX2/software/cycfx2prog-0.47.tar.gz"
+  mirror "https://web.archive.org/web/2024id_/https://www.triplespark.net/elec/periph/USB-FX2/software/cycfx2prog-0.47.tar.gz"
   sha256 "0e2669c11e81b271d26f96f252e936d81b4847dd5f47e50d17003c5330f74a36"
   license "GPL-2.0-only"
+  revision 1
+
+  livecheck do
+    url :homepage
+    regex(/href=.*?cycfx2prog[._-]v?(\d+(?:\.\d+)+)\.t/i)
+  end
 
   depends_on "libusb-compat"
 
-  stable do
-    patch :p1, :DATA
-  end
+  # Fix link order and add EEPROM programming (eeprom:AX and iic:FILE commands)
+  patch :DATA
 
   def install
-    system "make"
+    system "make", "CC=#{ENV.cxx}"
     bin.install "cycfx2prog"
   end
 
   test do
-    system "#{bin}/cycfx2prog", "--help"
+    assert_match "eeprom:AX", shell_output("#{bin}/cycfx2prog --help 2>&1")
   end
 end
 
